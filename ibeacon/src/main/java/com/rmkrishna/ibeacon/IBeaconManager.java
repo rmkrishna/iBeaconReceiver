@@ -7,6 +7,7 @@ import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 import java.util.List;
 
@@ -125,6 +126,10 @@ public class IBeaconManager {
      */
     private boolean isiBeacon(final byte[] scanRecord) {
 
+        if (scanRecord == null) {
+            return false;
+        }
+
         if (scanRecord.length > 9) {
             int iBeaconIdentifier = ((int) scanRecord[IBEACON_IDEDNTIFIER_INDEX] & 0xff);
             int iBeaconSubType = ((int) scanRecord[IBEACON_IDEDNTIFIER_SUBTYPE_INDEX] & 0xff);
@@ -210,6 +215,9 @@ public class IBeaconManager {
 
             final int minor = getMinor(scanRecord);
 
+            Log.d("MM", "onScanResult: uuid " + uuid + " major " + major + " minor " + minor + " " + result.toString());
+            Log.d("MM", "onScanResult: " + result.getScanRecord().toString());
+
             if (mIBeaconListener != null) {
                 mIBeaconListener.receivedIBeacon(uuid, major, minor);
             }
@@ -220,7 +228,7 @@ public class IBeaconManager {
     /**
      * bytesToHex method
      */
-    static final char[] hexArray = "0123456789ABCDEF".toCharArray();
+    static final char[] hexArray = "0123456789abcdef".toCharArray();
 
     private static String bytesToHex(byte[] bytes) {
 
